@@ -33,6 +33,8 @@ class Pile:
     # create an empty pile
     def __init__(self):
         self.cards = []
+        # used on palletes when determining if they should be considered as winner
+        self.inplay = True
 
     # use None as default value becuase self isn't accesible
     def add_card(self, new_card, index = None):

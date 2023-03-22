@@ -32,6 +32,12 @@ styles = {
     "reset": "\033[0m"
 }
 
+# list of colors from most value to least
+colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+
+# empty placeholder Pile
+empty_pile = Pile()
+
 
 def check_size():
     '''
@@ -74,19 +80,21 @@ def welcome():
     print("(Press enter to start the game)")
     input()
 
-def check_winner(palletes, canvas):
-    # ---- all rules ----
-    # every rule will have it's own function which returns the currently winning player
-    # red - highest card
+def check_winner(game_palletes, canvas):
+    # checks who is winning the game
+    # NOTE: I didn't think that python has a data strucutre called set...
+    # in this function a set refers to a list of cards which follow a condition (the current rule)
+    
+    # functions for all the rules
     def highest_card():
         # creates a list of each players highest card, if pallete is empty sets to None
         highest_cards = [max(i.cards) if i.cards else None for i in palletes]
         # returns the player with the highest card, or None if no one has cards
-        return highest_cards.index(max(highest_cards)) if highest_cards != [None, None, None, None] else None
+        return highest_cards.index(max([i for i in highest_cards if i != None])) if highest_cards != [None, None, None, None] else None
 
     def one_number():
         # this will store the cards that make up the mode of each deck
-        modes = []
+        sets = []
         
         # calculate the mode of every pallete
         for pallete in palletes:
@@ -109,10 +117,10 @@ def check_winner(palletes, canvas):
                     max_mode = len(value)
                     index = values.index(value)
             # add the highest value if there is one otherwise add empty list
-            modes.append(values[index]) if max_mode != 0 else modes.append([])
+            sets.append(values[index]) if max_mode != 0 else sets.append([])
 
-        # now modes looks like [[red7, green7, bue7], [green2, indigo2, violet2], [green6]
-        lengths = [len(mode) for mode in modes]
+        # get the lengths of each set
+        lengths = [len(set) for set in sets]
 
         # if no one has cards then None, stops first move from just changing canvas
         if max(lengths) == 0:
@@ -123,7 +131,7 @@ def check_winner(palletes, canvas):
         # this means more than one person has the same mode
         else:
             # this case we need to find the highest card of all the highest modes
-            ties = [(mode, modes.index(mode)) for mode in modes if len(mode) == max(lengths)]
+            ties = [(set, sets.index(set)) for set in sets if len(set) == max(lengths)]
             # stores the highest card found as well as the index of that player
             index = None
             max_card = None
@@ -135,74 +143,167 @@ def check_winner(palletes, canvas):
                     index = ties[i][1]
             
             return index
+
     def one_color():
-        # one color is pretty much the same as one number but backwards you could say
-        # we'll still call it mode, but its the mode of colors, and we'll use a dictionary instead of a list
-        modes = []
+        # stores sets of one color cards
+        sets = []
 
         for pallete in palletes:
-            colors = {
-                "red": [],
-                "orange": [],
-                "yellow": [],
-                "green": [],
-                "blue": [],
-                "indigo": [],
-                "violet": []
-            }
+            # list starts as 7 empty lists, each representing a color
+            # cards will be sorted into their colors, and the 
+            set = [[], [], [], [], [], [], []]
+            
+    def most_even():
+        # stores sets of even cards
+        sets = []
+
+        for pallete in palletes:
+            set = []
+
+            # go through every card
+            for card in pallete.cards:
+                if int(card.number) % 2 == 0:
+                    set.append(card)
+
+            sets.append(set)
+
+        # first find the lengths of each set
+        lengths = [len(set) for set in sets]
+    
+        # first find the max length
+        highest = max(lengths)
+
+        # first check if no one has cards under 4
+        if highest == 0:
+            return None
+        # next if theres only one person with the highest than they won
+        elif lengths.count(highest) == 1:
+            return lengths.index(highest)
+        # this means more than one person has the same amount of cards
+        else:
+            # find all our ties
+            ties = [(set, sets.index(set)) for set in sets if len(set) == highest]
+
+            # find the highest card in ties
+            index = None
+            max_card = None
+            for tie in ties:
+                if max(tie[0]) > max_card:
+                    max_card = max(tie[0])
+                    index = tie[1]
+
+            return index
+
+    def differnt_colors():
+        # stores every set
+        sets = []
+
+        for pallete in palletes:
+            # initiate the set as a list of 7 Nones, each one representing a different color
+            # as we find cards with different colors we will replace them with cards
+            set = [None, None, None, None, None, None, None]
 
             for card in pallete.cards:
-                colors[card.color].append(card)
+                # get the index of the cards color
+                color_index = colors.index(card.color)
 
-            max_mode = 0
-            key = None
+                # check if current card is > than the card used for that color
+                if card > set[color_index]:
+                    set[color_index] = card
+            # add the set, removing all Nones
+            sets.append([i for i in set if i != None])
 
-            for color, cards in colors.items():
-                # we dont use >= because
-                if len(cards) > max_mode:
-                    max_mode = len(cards)
-                    key = color
+        # get lengths of every set
+        lengths = [len(set) for set in sets]
 
-            modes.append((key, colors[key])) if not key is None else modes.append([])
+        # find the set with the most cards
+        highest = max(lengths)
 
-        # stores the length of each mode
-        lengths = [len(mode[1]) for mode in modes]
-
-
-        # first check if anyone has cards
-        if max(lengths) == 0:
+        # check if players have no cards
+        if highest == 0:
             return None
-        # check to see if the biggest number in lengths appears more than once
-        elif lengths.count(max(lengths)) == 1:
-            return lengths.index(max(lengths))
-        # this means it appears more than once so theres a tie
+        # check if only one person has the most cards
+        elif lengths.count(highest) == 1:
+            # reutrn that players
+            return lengths.index(highest)
+        # otherwise there is a tie
         else:
-            ties = [(mode, modes.index(mode)) for mode in modes if len(mode[1]) == max(lengths)]
+            # get all ties
+            ties = [(set, sets.index(set)) for set in sets if len(set) == highest]
 
-            colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
-
-            highest_color = None
-            indexes = []
-            
+            # find highest card in ties
+            index = None
+            max_card = None
             for tie in ties:
-                if colors.index(tie[0][0]) > highest_color:
-                    indexes = []
-                    indexes.append(tie[1])
-                    highest_color = colors.index(tie[0][0])
+                if max(tie[0]) > max_card:
+                    max_card = max(tie[0])
+                    index = tie[1]
+                    
+            return index
+    def under_four():
+        # this will store each players cards which are under 4
+        sets = []
 
-            if len(indexes) == 1:
-                return indexes[0]
-            else:
-                # fix this
-                return None
+        for pallete in palletes:
+            # this will contain the cards under 4 for each player
+            set = []
+
+            # go through every card
+            for card in pallete.cards:
+                # if the number is < 4 than add it to the players set
+                if int(card.number) < 4:
+                    set.append(card)
+            # now add the players set to the list of sets
+            sets.append(set)
+
+        # first find the lengths of each set
+        lengths = [len(set) for set in sets]
+    
+        # first find the max length
+        highest = max(lengths)
+
+        # first check if no one has cards under 4
+        if highest == 0:
+            return None
+        # next if theres only one person with the highest than they won
+        elif lengths.count(highest) == 1:
+            return lengths.index(highest)
+        # this means more than one person has the same amount of cards
+        else:
+            # find all our ties
+            ties = [(set, sets.index(set)) for set in sets if len(set) == highest]
+
+            # find the highest card in ties
+            index = None
+            max_card = None
+            for tie in ties:
+                if max(tie[0]) > max_card:
+                    max_card = max(tie[0])
+                    index = tie[1]
+
+            return index
+            
+    # new palletes list so we can easily remove the palletes out of play without deleting them from board
+    palletes = []
+
+    for pallete in game_palletes:
+        # check if the pallete is in play
+        palletes.append(pallete) if pallete.inplay else palletes.append(empty_pile)
+    
     if canvas.cards[0].color == "red":
         return highest_card()
     elif canvas.cards[0].color == "orange":
         return one_number()
-    elif canvas.cards[0].color == "yellow":
-        return one_color()
+    #elif canvas.cards[0].color == "yellow":
+        #return one_color()
+    elif canvas.cards[0].color == "blue":
+        return differnt_colors()
+    elif canvas.cards[0].color == "green":
+        return most_even()
+    elif canvas.cards[0].color == "violet":
+        return under_four()
     else:
-        return -1
+        return None
 def user_turn(hand, palletes, canvas):
     def get_action(invalid):
         '''
@@ -320,44 +421,45 @@ def user_turn(hand, palletes, canvas):
             return False
     # start by getting the users action
     def add_both():
-        # reprint board
-        board.reprint()
-        # print turn message again to allow user to see current rule
-        print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
-
-        # get users card
-        choice1 = get_card("Which card would you like to add to your pallete?")
-        
-        # check for go back
-        if choice1 == -1:
-            # false signals to go back
-            return False
-
-        # remove the selected card from hand and add it to pallete
-        palletes[0].add_card(hand.remove_card(choice1))
-
-        # reprint board
-        board.draw()
-        # print turn message again to allow user to see current rule
-        print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
+        if len(hand.cards) > 1:
+            # reprint board
+            board.reprint()
+            # print turn message again to allow user to see current rule
+            print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
     
-        # get users card
-        choice2 = get_card("Which card would you like to add to the canvas?")
+            # get users card
+            choice1 = get_card("Which card would you like to add to your pallete?")
+            
+            # check for go back
+            if choice1 == -1:
+                # false signals to go back
+                return False
+    
+            # remove the selected card from hand and add it to pallete
+            palletes[0].add_card(hand.remove_card(choice1))
+    
+            # reprint board
+            board.draw()
+            # print turn message again to allow user to see current rule
+            print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
         
-        # check for go back
-        if choice2 == -1:
-            hand.add_card(palletes[0].remove_card(len(palletes[0].cards) - 1), choice1)
-            return False
-
-        # add card to start of canvas
-        canvas.add_card(hand.remove_card(choice2), 0)
-
-        if check_winner(palletes, canvas) == 0:
-            return True
-        else:
-            hand.add_card(palletes[0].remove_card(len(palletes[0].cards) - 1), choice1)
-            hand.add_card(canvas.remove_card(), choice2)
-            return False
+            # get users card
+            choice2 = get_card("Which card would you like to add to the canvas?")
+            
+            # check for go back
+            if choice2 == -1:
+                hand.add_card(palletes[0].remove_card(len(palletes[0].cards) - 1), choice1)
+                return False
+    
+            # add card to start of canvas
+            canvas.add_card(hand.remove_card(choice2), 0)
+    
+            if check_winner(palletes, canvas) == 0:
+                return True
+            else:
+                hand.add_card(palletes[0].remove_card(len(palletes[0].cards) - 1), choice1)
+                hand.add_card(canvas.remove_card(), choice2)
+                return False
             
     invalid = False
     while True:
@@ -405,22 +507,24 @@ def com_turn(hand, palletes, canvas, index):
         else:
             hand.add_card(canvas.remove_card())
 
-    # now we check every card getting added to pallete again
-    for i in range(len(hand.cards)):
-        palletes[index].add_card(hand.remove_card(i))
-
-        # but now we also check every card going to canvas as well
-        for j in range(len(hand.cards)):
-            canvas.add_card(hand.remove_card(j), 0)
-
-            # now check for winner
-            if check_winner(palletes, canvas) == index:
-                return True
-            else:
-                hand.add_card(canvas.remove_card())
-        # since we finished the for loop no move was found so undo the pallete
-        hand.add_card(palletes[index].remove_card(len(palletes[index].cards) - 1), i)
-
+    # check if theres enough cards to move 2 cards
+    if len(hand.cards) > 1:
+        # now we check every card getting added to pallete again
+        for i in range(len(hand.cards)):
+            palletes[index].add_card(hand.remove_card(i))
+    
+            # but now we also check every card going to canvas as well
+            for j in range(len(hand.cards)):
+                canvas.add_card(hand.remove_card(j), 0)
+    
+                # now check for winner
+                if check_winner(palletes, canvas) == index:
+                    return True
+                else:
+                    hand.add_card(canvas.remove_card())
+            # since we finished the for loop no move was found so undo the pallete
+            hand.add_card(palletes[index].remove_card(len(palletes[index].cards) - 1), i)
+    
     # no moves found
     return False
     
@@ -457,12 +561,13 @@ def round():
         if playing.count(True) > 1:   
             if playing[0] and playing.count(True) > 1:
                 playing[0] = user_turn(hands[0], palletes, canvas)
-            if playing[1] and playing.count(True) > 1:
-                playing[1] = com_turn(hands[1], palletes, canvas, 1)
-            if playing[2] and playing.count(True) > 1:
-                playing[2] = com_turn(hands[2], palletes, canvas, 2)
-            if playing[3] and playing.count(True) > 1:
-                playing[3] = com_turn(hands[3], palletes, canvas, 3)
+                if not playing[0]:
+                    palletes[0].inplay = False
+            for i in range(1, 4):
+                if playing[i] and playing.count(True) > 1:
+                    playing[i] = com_turn(hands[i], palletes, canvas, i)
+                    if not playing[i]:
+                        palletes[i].inplay = False
             board.draw()
         else:
             print(f"Player {playing.index(True) + 1} wins!")
