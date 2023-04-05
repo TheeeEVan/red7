@@ -72,6 +72,11 @@ def welcome():
     print("(Press enter to start the game)")
     input()
 
+def leave():
+    '''Ends the game before someone wins'''
+    clear()
+    quit()
+
 def user_turn(hand, palletes, canvas):
     '''
     Runs a users turn
@@ -83,7 +88,7 @@ def user_turn(hand, palletes, canvas):
         # draw board and inital options
         board.draw()
         print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
-        print("(1) Move a card to pallete\n(2) Move a card to canvas\n(3) Move a card to pallete and canvas\n(4) End turn and Lose")
+        print("(1) Move a card to pallete              (5) Print Rules\n(2) Move a card to canvas               (6) Shuffle your hand\n(3) Move a card to pallete and canvas   (7) Quit\n(4) End turn and Lose")
         if invalid:
             print(f"{styles['red'] + styles['bold']}Invalid Move!{styles['reset']} After that move you would be losing...")
         # continue looping until user gives valid option
@@ -93,14 +98,14 @@ def user_turn(hand, palletes, canvas):
 
             # check for valid input
             if action.isnumeric():
-                if int(action) > 0 and int(action) < 5:
+                if int(action) > 0 and int(action) < 8:
                     # return int of input
                     return int(action)
             # since function didn't return input is invalid
             # reprint board and instructions adding invalid message
             board.reprint()
             print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
-            print("(1) Move a card to pallete\n(2) Move a card to canvas\n(3) Move a card to pallete and canvas\n(4) End turn")
+            print("(1) Move a card to pallete              (5) Print Rules\n(2) Move a card to canvas               (6) Shuffle your hand\n(3) Move a card to pallete and canvas   (7) Quit\n(4) End turn and Lose")
             print(f"{styles['red'] + styles['bold']}Invalid Input!{styles['reset']}")
 
     def get_card(message):
@@ -240,7 +245,17 @@ def user_turn(hand, palletes, canvas):
                 hand.add_card(palletes[0].remove_card(len(palletes[0].cards) - 1), choice1)
                 hand.add_card(canvas.remove_card(), choice2)
                 return False
-            
+
+    def print_rules():
+        board.reprint()
+        print("Rules")
+        input()
+
+    def shuffle_hand():
+        hand.shuffle()
+        board.draw()
+
+
     invalid = False
     # ask user for their action until valid move
     while True:
@@ -270,7 +285,14 @@ def user_turn(hand, palletes, canvas):
             else:
                 invalid = True
         elif action == 4:
+            # returning false signals that player lost
             return False
+        elif action == 5:
+            print_rules()
+        elif action == 6:
+            shuffle_hand()
+        elif action == 7:
+            leave()
 def com_turn(hand, palletes, canvas, index):
     # computers algorithm
     # 1. check for valid card to pallete
@@ -360,4 +382,5 @@ def round():
         else:
             print(f"Player {playing.index(True) + 1} wins!")
             break
+
 round()
