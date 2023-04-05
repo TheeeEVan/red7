@@ -203,7 +203,19 @@ def check_winner(game_palletes, canvas):
             return index
         
     def form_run():
-        return None
+        # this will be each players set with runs
+        sets = []
+
+        for pallete in palletes:
+            # sort the cards by number
+            numbers = [[], [], [], [], [], [], []]
+
+            for card in pallete.cards:
+                numbers[card.number - 1].append(card)
+
+
+
+        
 
     def under_four():
         # this will store each players cards which are under 4
@@ -255,6 +267,7 @@ def check_winner(game_palletes, canvas):
         # check if the pallete is in play
         palletes.append(pallete) if pallete.inplay else palletes.append(empty_pile)
     
+    # check which color is active and use the appropriate function
     if canvas.cards[0].color == "red":
         return highest_card()
     elif canvas.cards[0].color == "orange":
