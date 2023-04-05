@@ -1,3 +1,6 @@
+# Winner.py
+# contains the check_winner function which finds which player is winning
+
 from Pile import Pile
 
 # list of colors from most value to least
@@ -10,7 +13,7 @@ def check_winner(game_palletes, canvas):
     # checks who is winning the game
     # NOTE: I didn't think that python has a data strucutre called set...
     # in this function a set refers to a list of cards which follow a condition (the current rule)
-    
+
     # functions for all the rules
     def highest_card():
         # creates a list of each players highest card, if pallete is empty sets to None
@@ -210,13 +213,60 @@ def check_winner(game_palletes, canvas):
             # sort the cards by number
             numbers = [[], [], [], [], [], [], []]
 
+            # go through every card and put them in the correct list
             for card in pallete.cards:
                 numbers[card.number - 1].append(card)
 
+            # max run will contain the biggest run we find
+            max_run = []
+            # current run will store the run we are currently finding
+            current_run = []
 
+            # go through each number
+            for i in range(7):
+                # if there is a card for this number add the biggest to the run
+                if numbers[i] != []:
+                    current_run.append(max(numbers[i]))
+                else:
+                    # if no cards
+                    # if current run bigger or = to max run replace max run
+                    if len(current_run) >= len(max_run):
+                        max_run = current_run.copy()
+                    # reset current
+                    current_run = []
+                
+            # check if current run is bigger than max since there are no more numbers to check        
+            if len(current_run) >= len(max_run):
+                max_run = current_run.copy()
+            
+            sets.append(max_run)
 
+        # store the lengths of each run
+        lengths = [len(set) for set in sets]
+
+        highest = max(lengths)
         
+        # check if no one has cards
+        if highest == 0:
+            return None
+        # check if only one person has the most 
+        elif lengths.count(highest) == 1:
+            return lengths.index(highest)
+        # there is a tie
+        else:
+            # get all ties
+            ties = [(set, sets.index(set)) for set in sets if len(set) == highest]
 
+            # find highest card in ties
+            index = None
+            max_card = None
+            for tie in ties:
+                if max(tie[0]) > max_card:
+                    max_card = max(tie[0])
+                    index = tie[1]
+                    
+            return index
+            
     def under_four():
         # this will store each players cards which are under 4
         sets = []
@@ -282,5 +332,6 @@ def check_winner(game_palletes, canvas):
         return form_run()
     elif canvas.cards[0].color == "violet":
         return under_four()
+    # something if this happens so this is here so it's easy to find when it breaks
     else:
-        return None
+        raise TypeError("Top card of canvas doesn't have valid color")

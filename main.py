@@ -1,9 +1,6 @@
-'''
-red7
-'''
-# import files
+# import modules
 from Pile import Pile, DrawPile
-from Card import Card, PlayingRed
+from Card import PlayingRed
 from Graphics import Board, clear
 from Winner import check_winner
 import time
@@ -76,6 +73,9 @@ def welcome():
     input()
 
 def user_turn(hand, palletes, canvas):
+    '''
+    Runs a users turn
+    '''
     def get_action(invalid):
         '''
         returns users selected action as int
@@ -143,6 +143,9 @@ def user_turn(hand, palletes, canvas):
             
     # move card to pallete
     def add_pallete():
+        '''
+        Allows a user to choose a card from their deck to add to their pallete
+        '''
         # reprint board
         board.reprint()
         # print turn message again to allow user to see current rule
@@ -169,6 +172,9 @@ def user_turn(hand, palletes, canvas):
             return False
 
     def add_canvas():
+        '''
+        Lets the user choose a card from their deck to add to the canvas
+        '''
         # reprint board
         board.reprint()
         # print turn message again to allow user to see current rule
@@ -192,6 +198,9 @@ def user_turn(hand, palletes, canvas):
             return False
     # start by getting the users action
     def add_both():
+        '''
+        Let's the user choose two cards from their deck, one for the pallete, one for the canvas
+        '''
         if len(hand.cards) > 1:
             # reprint board
             board.reprint()
@@ -233,11 +242,19 @@ def user_turn(hand, palletes, canvas):
                 return False
             
     invalid = False
+    # ask user for their action until valid move
     while True:
         action = get_action(invalid)
-        # user wants to add card to pallete
+        # go through all possible actions, running the correct function for each
+        # functions return True if valid move
+        # 1 - Add to pallete
+        # 2 - Add to canvas
+        # 3 - Add to both
+        # 4 - End Turn
+        # 5 - Print Rules
+        # 6 - Shuffle Deck
+        # 7 - Quit Game
         if action == 1:
-            # pallete will return False if user goes back or makes invalid move so we can restart the loop
             if add_pallete():
                 return True
             else:
