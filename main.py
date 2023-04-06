@@ -6,6 +6,25 @@ from Winner import check_winner
 import time
 
 # constants
+
+title = '''
+                                                 ,----, 
+                                               .'   .`| 
+\033[38;2;255;0;0m,-.----.\033[0m                                    .'   .'   ; 
+\033[38;2;255;0;0m\    /  \                  ,---,\033[0m          ,---, '    .' 
+\033[38;2;255;0;0m;   :    \               ,---.'| \033[0m         |   :     ./  
+\033[38;2;255;0;0m|   | .\ :               |   | : \033[0m         ;   | .'  /   
+\033[38;2;255;0;0m.   : |: |    ,---.      |   | | \033[0m         `---' /  ;    
+\033[38;2;255;0;0m|   |  \ :   /     \   ,--.__| | \033[0m           /  ;  /     
+\033[38;2;255;0;0m|   : .  /  /    /  | /   ,'   | \033[0m          ;  /  /      
+\033[38;2;255;0;0m;   | |  \ .    ' / |.   '  /  | \033[0m         /  /  /       
+\033[38;2;255;0;0m|   | ;\  \'    ;   /|'   ; |:  | \033[0m       ./__;  /        
+\033[38;2;255;0;0m:   ' | \.''   |  / ||   | '/  ' \033[0m       |   : /         
+\033[38;2;255;0;0m:   : :-'  |   :    ||   :    :| \033[0m       ;   |/          
+\033[38;2;255;0;0m|   |.'     \   \  /  \   \  /   \033[0m       `---'           
+\033[38;2;255;0;0m`---'        `----'    `----'    \033[0m                       
+                                                        '''
+
 # contains strings for the rules
 rules = {
     "red": "Highest Card",
@@ -36,7 +55,8 @@ def check_size():
     Allows user to resize console to ensure the entire game will fit
     '''
     # prints 77 character line to allow user to resize console so the game will fit without wrapping
-    print("Before starting please resize your console so you only see one line\n(press enter to continue)")
+    clear()
+    print("Before starting please resize your console so you only see one horizontal line\n(press enter to continue)")
     print("─"*77)
     # enter to continue
     input()
@@ -47,27 +67,10 @@ def welcome():
     '''
     Welcomes user to the game
     '''
-    # TODO: Make this better!!!
     print("Welcome to...")
-    time.sleep(2)
+    time.sleep(1.5)
     clear()
-    print('''
-                                                 ,----, 
-                                               .'   .`| 
-\033[38;2;255;0;0m,-.----.\033[0m                                    .'   .'   ; 
-\033[38;2;255;0;0m\    /  \                  ,---,\033[0m          ,---, '    .' 
-\033[38;2;255;0;0m;   :    \               ,---.'| \033[0m         |   :     ./  
-\033[38;2;255;0;0m|   | .\ :               |   | : \033[0m         ;   | .'  /   
-\033[38;2;255;0;0m.   : |: |    ,---.      |   | | \033[0m         `---' /  ;    
-\033[38;2;255;0;0m|   |  \ :   /     \   ,--.__| | \033[0m           /  ;  /     
-\033[38;2;255;0;0m|   : .  /  /    /  | /   ,'   | \033[0m          ;  /  /      
-\033[38;2;255;0;0m;   | |  \ .    ' / |.   '  /  | \033[0m         /  /  /       
-\033[38;2;255;0;0m|   | ;\  \'    ;   /|'   ; |:  | \033[0m       ./__;  /        
-\033[38;2;255;0;0m:   ' | \.''   |  / ||   | '/  ' \033[0m       |   : /         
-\033[38;2;255;0;0m:   : :-'  |   :    ||   :    :| \033[0m       ;   |/          
-\033[38;2;255;0;0m|   |.'     \   \  /  \   \  /   \033[0m       `---'           
-\033[38;2;255;0;0m`---'        `----'    `----'    \033[0m                       
-                                                        ''')
+    print(title)
     print("\n\n\033[1mEnsure you read the readme to learn how to play the game before starting!\033[0m")
     print("(Press enter to start the game)")
     input()
@@ -239,25 +242,28 @@ def user_turn(hand, palletes, canvas):
             # add card to start of canvas
             canvas.add_card(hand.remove_card(choice2), 0)
     
+            # check if user is winning
             if check_winner(palletes, canvas) == 0:
                 return True
             else:
-                hand.add_card(palletes[0].remove_card(len(palletes[0].cards) - 1), choice1)
+                # if user isn't winning, add the cards back to the hand
                 hand.add_card(canvas.remove_card(), choice2)
+                # finds the last card in the pallete and puts it back in the deck
+                hand.add_card(palletes[0].remove_card(len(palletes[0].cards) - 1), choice1)
+                # user didn't make valid move so return False
                 return False
 
     def print_rules():
+        # reprint board
         board.reprint()
-        print(f"{styles['bold']}All Rules:{styles['reset']}")
-        print(f"{styles['red']}{rules['red']}{styles['reset']}")
-        print(f"{styles['orange']}{rules['orange']}{styles['reset']}")
-        print(f"{styles['yellow']}{rules['yellow']}{styles['reset']}")
-        print(f"{styles['green']}{rules['green']}{styles['reset']}")
-        print(f"{styles['blue']}{rules['blue']}{styles['reset']}")
-        print(f"{styles['indigo']}{rules['indigo']}{styles['reset']}")
-        print(f"{styles['violet']}{rules['violet']}{styles['reset']}")
-        input("(press enter to continue)")
+        # 
+        print(f"{styles['bold']}All Rules:{styles['reset']} (press enter to continue)")
+        for key in rules.keys():
+            print(styles[key] + rules[key] + styles['reset'])
+        input()
 
+    # the requirements are to have to be able to shuffle the deck but I decided not to use the deck
+    # this just uses the shuffle function on the users hand to show that it would be possible since its the same class as the deck
     def shuffle_hand():
         hand.shuffle()
         board.draw()
@@ -371,24 +377,38 @@ def round():
     for i in range(7):
         for j in range(4):
             hands[j].add_card(draw_pile.remove_card())
-    # this keeps track of 
+    
+    # this keeps track of which players are still in the game
     playing = [True, True, True, True]
+
+    # continue playing until game is over
     while True:
+        # check if more than one person is still in the game
         if playing.count(True) > 1:   
+            # user's turn:
+            # check if user is still in
             if playing[0] and playing.count(True) > 1:
+                # run users turn
+                # user_turn will return True or False depending on if the user is winning or not
                 playing[0] = user_turn(hands[0], palletes, canvas)
+                # if user is out, set their pallete state to not be in play
                 if not playing[0]:
                     palletes[0].inplay = False
+            # loop through computers (player 2, 3 and 4)
             for i in range(1, 4):
                 board.draw()
                 print("Computers are playing...")
-                # waiting helps to make it easier to see what is happening
-                time.sleep(1)
                 if playing[i] and playing.count(True) > 1:
+                    # waiting helps to make it easier to see what is happening
+                    time.sleep(1)
                     playing[i] = com_turn(hands[i], palletes, canvas, i)
                     if not playing[i]:
                         palletes[i].inplay = False
+
+                        for card in hands[i].cards:
+                            card.inplay = False
         else:
+            board.draw()
             print(f"{styles['bold']}Player {playing.index(True) + 1} wins!{styles['reset']}")
             # destroy the board cause its global and memory is bad
             del board
@@ -414,6 +434,8 @@ if __name__ == "__main__":
     wins = 0
 
     while playing:
+        clear()
+        print(title)
         print(f"You have won {styles['bold']}{wins}{styles['reset']} games this session\n")
 
         invalid = True
@@ -429,17 +451,24 @@ if __name__ == "__main__":
                 if action > 0 and action < 4:
                     invalid = False
                 else:
+                    clear()
+                    print(title)
+                    print(f"You have won {styles['bold']}{wins}{styles['reset']} games this session\n")
                     print(f"{styles['bold']}{styles['red']}Invalid input...{styles['reset']}\n")
             else:
+                clear()
+                print(title)
+                print(f"You have won {styles['bold']}{wins}{styles['reset']} games this session\n")
                 print(f"{styles['bold']}{styles['red']}Invalid input...{styles['reset']}\n")
         
         if action == 1:
+            invalid = False
             # round will return true if user wins so we can just put it in if statement
             if round():
                 wins += 1
-            time.sleep(2)
-            clear()
+            time.sleep(4)
         elif action == 2:
+            invalid = False
             tutorial()
         elif action == 3:
             leave()

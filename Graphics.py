@@ -36,7 +36,7 @@ class Board:
         lines = []
         
         # in order to keep cards centered we need to have a priority for where cards will be placed
-        # it will look something like this
+        # this is the order
         # 6 4 2 1 3 5 7
 
         # to acheive this we'll fill an array with all the cards in order, filling the rest with placeholder empty card
@@ -64,9 +64,12 @@ class Board:
         # go through every card in our temp hand
         for card in temp_pile:
             # if placeholder than set to an empty card
+            # otherwise draw as hidden card
             if card == None:
                 lines.append(empty_card)
-            # otherwise draw as hidden card
+            # check if we should draw red x
+            elif not card.inplay:
+                lines.append(render_card("red", "X"))
             else:
                 lines.append(render_card("hidden", "?"))
 
@@ -107,7 +110,6 @@ class Board:
         # reset for next line
         lines = []
 
-
         # now that the first two piles are done, we have to render the four vertically positioned piles
         # as well as the draw pile and canvas
 
@@ -143,6 +145,9 @@ class Board:
             # if placeholder add empty
             if temp_pile[0][i] == None:
                 lines.append(empty_card)
+            # check if we should draw red x
+            elif not temp_pile[0][i].inplay:
+                lines.append(render_card("red", "X"))
             # otherwise add a hidden card since its a computers deck
             else:
                 lines.append(render_card("hidden", "?"))
@@ -200,6 +205,9 @@ class Board:
             # if placeholder add empty
             if temp_pile[3][i] == None:
                 lines.append(empty_card)
+            # check if we should draw red x
+            elif not temp_pile[3][i].inplay:
+                lines.append(render_card("red", "X"))
             # otherwise add a hidden card because its a hidden deck
             else:
                 lines.append(render_card("hidden", "?"))

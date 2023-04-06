@@ -24,8 +24,10 @@ class Card:
             raise ValueError("Invalid color")
         if number < 1 or number > 7:
             raise ValueError("Invalid number")
+        
         self.color = color
         self.number = number
+        self.inplay = True
 
     # COMPARATIVE LOGIC: (if Card1 > Card2 then Card1 has higher value than Card 2)
     
