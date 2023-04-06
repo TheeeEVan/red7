@@ -147,7 +147,6 @@ def check_winner(game_palletes, canvas):
         else:
             # find all our ties
             ties = [(set, sets.index(set)) for set in sets if len(set) == highest]
-
             # find the highest card in ties
             index = None
             max_card = None

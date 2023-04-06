@@ -88,7 +88,7 @@ def user_turn(hand, palletes, canvas):
         # draw board and inital options
         board.draw()
         print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
-        print("(1) Move a card to pallete              (5) Print Rules\n(2) Move a card to canvas               (6) Shuffle your hand\n(3) Move a card to pallete and canvas   (7) Quit\n(4) End turn and Lose")
+        print("(1) Move a card to pallete              (5) Show Rules\n(2) Move a card to canvas               (6) Shuffle your hand\n(3) Move a card to pallete and canvas   (7) Quit\n(4) End turn and Lose")
         if invalid:
             print(f"{styles['red'] + styles['bold']}Invalid Move!{styles['reset']} After that move you would be losing...")
         # continue looping until user gives valid option
@@ -105,7 +105,7 @@ def user_turn(hand, palletes, canvas):
             # reprint board and instructions adding invalid message
             board.reprint()
             print(f"{styles['bold']}It's your turn! Current Rule:{styles['reset']} {styles[canvas.cards[0].color]}{rules[canvas.cards[0].color]}{styles['reset']}\n")
-            print("(1) Move a card to pallete              (5) Print Rules\n(2) Move a card to canvas               (6) Shuffle your hand\n(3) Move a card to pallete and canvas   (7) Quit\n(4) End turn and Lose")
+            print("(1) Move a card to pallete              (5) Show Rules\n(2) Move a card to canvas               (6) Shuffle your hand\n(3) Move a card to pallete and canvas   (7) Quit\n(4) End turn and Lose")
             print(f"{styles['red'] + styles['bold']}Invalid Input!{styles['reset']}")
 
     def get_card(message):
@@ -195,7 +195,7 @@ def user_turn(hand, palletes, canvas):
         # add card to start of canvas
         canvas.add_card(hand.remove_card(choice), 0)
 
-        # TODO: check for winner when all rules implemented
+        # check if player is winning
         if check_winner(palletes, canvas) == 0:
             return True
         else:
@@ -248,8 +248,15 @@ def user_turn(hand, palletes, canvas):
 
     def print_rules():
         board.reprint()
-        print("Rules")
-        input()
+        print(f"{styles['bold']}All Rules:{styles['reset']}")
+        print(f"{styles['red']}{rules['red']}{styles['reset']}")
+        print(f"{styles['orange']}{rules['orange']}{styles['reset']}")
+        print(f"{styles['yellow']}{rules['yellow']}{styles['reset']}")
+        print(f"{styles['green']}{rules['green']}{styles['reset']}")
+        print(f"{styles['blue']}{rules['blue']}{styles['reset']}")
+        print(f"{styles['indigo']}{rules['indigo']}{styles['reset']}")
+        print(f"{styles['violet']}{rules['violet']}{styles['reset']}")
+        input("(press enter to continue)")
 
     def shuffle_hand():
         hand.shuffle()
@@ -364,23 +371,75 @@ def round():
     for i in range(7):
         for j in range(4):
             hands[j].add_card(draw_pile.remove_card())
-    
+    # this keeps track of 
     playing = [True, True, True, True]
     while True:
-
         if playing.count(True) > 1:   
             if playing[0] and playing.count(True) > 1:
                 playing[0] = user_turn(hands[0], palletes, canvas)
                 if not playing[0]:
                     palletes[0].inplay = False
             for i in range(1, 4):
+                board.draw()
+                print("Computers are playing...")
+                # waiting helps to make it easier to see what is happening
+                time.sleep(1)
                 if playing[i] and playing.count(True) > 1:
                     playing[i] = com_turn(hands[i], palletes, canvas, i)
                     if not playing[i]:
                         palletes[i].inplay = False
-            board.draw()
         else:
-            print(f"Player {playing.index(True) + 1} wins!")
-            break
+            print(f"{styles['bold']}Player {playing.index(True) + 1} wins!{styles['reset']}")
+            # destroy the board cause its global and memory is bad
+            del board
+            if playing.index(True) == 0:
+                return True
+            return False
 
-round()
+def tutorial():
+    # do this 
+    print("yuh")
+    input()
+
+if __name__ == "__main__":
+    '''main game loop'''
+    # check size of users terminal
+    check_size()
+    # welcome the user
+    welcome()
+
+    # main loop condition
+    playing = True
+    # tracks players total wins
+    wins = 0
+
+    while playing:
+        print(f"You have won {styles['bold']}{wins}{styles['reset']} games this session\n")
+
+        invalid = True
+        action = ""
+
+        while invalid:
+            print("What would you like to do?")
+            print("(1) Start a game\n(2) Learn how to play\n(3) Quit")
+            action = input("")
+
+            if action.isnumeric():
+                action = int(action)
+                if action > 0 and action < 4:
+                    invalid = False
+                else:
+                    print(f"{styles['bold']}{styles['red']}Invalid input...{styles['reset']}\n")
+            else:
+                print(f"{styles['bold']}{styles['red']}Invalid input...{styles['reset']}\n")
+        
+        if action == 1:
+            # round will return true if user wins so we can just put it in if statement
+            if round():
+                wins += 1
+            time.sleep(2)
+            clear()
+        elif action == 2:
+            tutorial()
+        elif action == 3:
+            leave()
