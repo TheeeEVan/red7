@@ -1,9 +1,15 @@
 # Red 7
-![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+![](https://cf.geekdo-images.com/7zH6Kt5ebWEixjDGmHweNA__opengraph/img/FsWdE59IGU7oaE71HLaBXHoNRP4=/0x40:784x451/fit-in/1200x630/filters:strip_icc()/pic2247258.png)
 A python implementation of the card game Red 7.
 
 ## Getting Started
-I highly reccomend running this program on a local machine instead of replit, due to replit's console being very slow. This causes a scanning effect, whereas on a local machine everything runs smoothly.
+I highly reccomend running this program on a local machine instead of replit, due to replit's console being very slow. This causes a scanning effect, whereas on a local machine everything runs smoothly. If you cannot install onto local machine, the replit shell generally runs faster than the console.
 
 ### Prerequisits
 - Python 3.9+
+
+### Install (Local Machines)
+**Download the code onto your machine**<br>
+If you have git installed you can clone from the github repository<br>
+```> git clone https://github.com/TheeeEVan/red7```<br>
+Otherwise you can download the project directly from replit![image](images/download.png)
