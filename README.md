@@ -4,7 +4,7 @@ A python implementation of the card game Red 7.
 
 **ALL RULES ARE EXPLAINED IN [rules.md](rules.md)**
 
-## Getting Started
+## Getting Started ✅
 I highly reccomend running this program on a local machine instead of replit, due to replit's console being very slow. This causes a scanning effect, whereas on a local machine everything runs smoothly. If you cannot install onto local machine, the replit shell generally runs faster than the console.
 
 ### Prerequisits
@@ -23,7 +23,7 @@ Otherwise you can download the project directly from replit
 
 ![image](images/download.png)
 
-## Usage
+## Usage 🔧
 ### Running the Program
 Open a terminal in the project directory
 
@@ -33,3 +33,5 @@ Run the main python file
 > python main.py
 ```
 
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

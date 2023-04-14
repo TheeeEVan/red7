@@ -3,6 +3,7 @@ from Pile import Pile, DrawPile
 from Card import PlayingRed
 from Graphics import Board, clear
 from Winner import check_winner
+from Rules import tutorial
 import time
 
 # constants
@@ -417,11 +418,6 @@ def round():
             if playing.index(True) == 0:
                 return True
             return False
-
-def tutorial():
-    # do this 
-    print("yuh")
-    input()
 
 if __name__ == "__main__":
     '''main game loop'''

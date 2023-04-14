@@ -1,80 +1,34 @@
-<svg fill="none" viewBox="0 0 600 300" width="600" height="300" xmlns="http://www.w3.org/2000/svg">
-  <foreignObject width="100%" height="100%">
-    <div xmlns="http://www.w3.org/1999/xhtml">
-      <style>
-        @keyframes hi  {
-            0% { transform: rotate( 0.0deg) }
-           10% { transform: rotate(14.0deg) }
-           20% { transform: rotate(-8.0deg) }
-           30% { transform: rotate(14.0deg) }
-           40% { transform: rotate(-4.0deg) }
-           50% { transform: rotate(10.0deg) }
-           60% { transform: rotate( 0.0deg) }
-          100% { transform: rotate( 0.0deg) }
-        }
+# Rules 📖
+**NOTE:** In the python script, the difference between Indigo and Violet were very hard to see, so Violet is rendered as Pink in the game.
+## The Cards 🃏
+- There are 49 cards a deck
+	- Each card is assigned a number from 1-7
+	- Each card is assigned a color (Red, Orange, Yellow, Green, Blue, Indigo, Violet)
 
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
+### Card Worth
 
-        .container {
-          --color-main: #5452ee;
-          --color-primary: #e73c7e;
-          --color-secondary: #23a6d5;
-          --color-tertiary: #ffff;
+When comparing two cards, the card with the highest number will always be worth more. However, if both cards have the same number, the color which appears first in a rainbow *(Red, Orange, Yellow, Green, Blue, Indigo, Violet)* is worth more. For example a green 6 is worth more than a blue 6. This makes the Red 7 the highest valued card, and the Violet 1 the lowest valued card.
 
-          background: linear-gradient(-45deg, var(--color-main), var(--color-primary), var(--color-secondary), var(--color-tertiary));
-          background-size: 400% 400%;
-          animation: gradient 15s ease infinite;
+## Winning 🏆
+At the end of every turn you must be winning. This is how to determine who is winning.
 
-          width: 100%;
-          height: 300px;
+First, determine the current rule. The current rule is determined by the color of the card currently on top of the canvas. The rules are shown in the table below. At the beggining of the game, a placeholder red card is on the canvas, making the first rule, highest card.
 
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: white;
+![rules](images/rules.png)
 
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        }
+*Having this table easily accesible while playing is useful*
 
-        .hi {
-          animation: hi 1.5s linear -0.5s infinite;
-          display: inline-block;
-          transform-origin: 70% 70%;
-        }
+Next, determine which player has the most cards that follow the current rule.
 
-        @media (prefers-color-scheme: light) {
-          .container {
-            --color-main: #F15BB5;
-            --color-primary: #24b0ef;
-            --color-secondary: #4526f6;
-            --color-tertiary: #f6f645;
-          }
-        }
+If there is a tie, whoever has the highest card which follows the rule, wins.
 
-        @media (prefers-reduced-motion) {
-          .container {
-            animation: none;
-          }
 
-          .hi {
-            animation: none;
-          }
-        }
-      </style>
+## A Turn 🔁
+**Every turn you must do 1 of 4 things:**
 
-      <div class="container">
-        <h1>Hi there, my name is Nikola <div class="hi">👋</div></h1>
-      </div>
-    </div>
-  </foreignObject>
-</svg>
+1. Add a card to your pallete
+2. Add a card to the canvas
+3. Add a card to your pallete and then add a card to the canvas
+4. Do nothing (This means you lose) 
+
+If you are not winning at the end of your turn, you are out and have lost.
