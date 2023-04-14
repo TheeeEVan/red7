@@ -391,13 +391,12 @@ def round():
                 # run users turn
                 # user_turn will return True or False depending on if the user is winning or not
                 playing[0] = user_turn(hands[0], palletes, canvas)
-                # if user is out, set their pallete state to not be in play
+                # if user is out, set their pallete state to not be in play, as well as their cards
                 if not playing[0]:
                     palletes[0].inplay = False
-
-                for card in hands[0].cards:
-                                card.inplay = False
-            # loop through computers (player 2, 3 and 4)
+                    for card in hands[0].cards:
+                                    card.inplay = False
+            # loop through computers, (same as player except use i to reference the current computer) (player 2, 3 and 4)
             for i in range(1, 4):
                 board.draw()
                 print("Computers are playing...")
