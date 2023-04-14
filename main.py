@@ -394,6 +394,9 @@ def round():
                 # if user is out, set their pallete state to not be in play
                 if not playing[0]:
                     palletes[0].inplay = False
+
+                for card in hands[0].cards:
+                                card.inplay = False
             # loop through computers (player 2, 3 and 4)
             for i in range(1, 4):
                 board.draw()

@@ -278,6 +278,8 @@ class Board:
             # if placeholder add empty card
             if card == None:
                 lines.append(empty_card)
+            elif not card.inplay:
+                lines.append(render_card("red", "X"))
             # otherwise add the correct card with color and number
             else:
                 lines.append(render_card(card.color, card.number))
